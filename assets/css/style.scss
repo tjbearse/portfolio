@@ -1,0 +1,164 @@
+---
+---
+@import "minima";
+
+.obscured-mail:after {
+  content: attr(data-name) "@" attr(data-domain) "." attr(data-tld); 
+}
+
+
+/*
+layout inspired by
+https://uxdesign.cc/creating-horizontal-scrolling-containers-the-right-way-css-grid-c256f64fc585
+but heavily modified
+*/
+:root {
+	--content-max-width: min(90vw, 900px);
+	--gutter: calc(calc(100vw - var(--content-max-width))/2);
+}
+
+/*
+main content is surrounded by gutters. horizScroll expands out into the gutter
+
+gutter  |  header | gutter
+--------------------------
+gutter  |  main   | gutter
+hs      |  hs     | hs
+--------------------------
+gutter  |  footer | gutter
+*/
+body#project-carousel {
+
+	header, main, footer {
+		display: grid;
+		grid-gap: 0;
+		grid-template-columns: var(--gutter) 1fr var(--gutter);
+		align-content: start;
+
+		& > * {
+			grid-column: 2;
+		}
+	}
+
+	main > .full {
+		grid-column: 1 / -1;
+	}
+
+	header .wrapper, footer .wrapper {
+		/* overwrites template styles */
+		max-width: 100%;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+	}
+
+	main {
+		h1 {
+			font-size: 2.25em;
+			margin: 16px 0;
+		}
+		h2 {
+			font-size: 2em;
+			margin: 16px 0;
+		}
+		h3 {
+			font-size: 1.5em;
+		}
+	}
+
+	.box {
+		min-width: min(400px, 80vw);
+		max-width: calc(100vw - 2*var(--gutter))
+	}
+
+	/* can also set via js i.e. element.style.setProperty("--hs-count", count); */
+	{% for i in (1..15) %}
+	.horizScroll-{{i}} { --hs-count: {{i}}; }
+	{% endfor %}
+
+	.horizScroll {
+		/* gap cannot exceed gutter, else (gutter-gap) < 0 */
+		--gap: min(32px,var(--gutter));
+		display: grid;
+		/*
+			gutter | card 1 | card 2 | ... | gutter
+			gutter dummy item is gutter - gap for total width of --gutter
+		*/
+		grid-gap: 8px var(--gap);
+		grid-template-columns: calc(var(--gutter) - var(--gap)) repeat(var(--hs-count), 1fr) calc(var(--gutter) - var(--gap));
+		/*
+			title
+			========
+			img
+			========
+			text
+			========
+			tags
+		*/
+		grid-template-rows: 1fr;
+
+		margin-bottom: 32px;
+		padding: var(--gap) 0;
+		background: linear-gradient(180deg, $background-color 0%, $grey-color-light 50%);
+
+		overflow-x: scroll;
+
+		.box {
+			background: $background-color;
+			grid-row: 1/-1;
+			display: grid;
+			grid-template-columns: 1fr;
+			grid-template-rows: auto 1fr auto;
+
+			h3 {
+				margin: 0;
+			}
+		}
+
+		&:before, &:after {
+			content: '';
+			grid-row: 1/-1;
+		}
+	}
+
+	.carousel-image-container {
+		align-self: end;
+		justify-self: center;
+		max-height: 300px;
+		/* all images are presized to 4:3 */
+		aspect-ratio: 4/3;
+
+		& > img {
+			margin: auto;
+			display: block;
+		}
+	}
+}
+
+.box {
+	border: solid 0px;
+	padding: 8px;
+	border-radius: 8px;
+	box-shadow: 2px 4px 6px $grey-color;
+}
+
+a.external-ref {
+	color: $grey-color;
+}
+
+.tags {
+	align-self: end;
+	display: flex;
+	flex-wrap: wrap-reverse;
+	justify-content: end;
+}
+.tag {
+	display: inline-block;
+	background: $grey-color-light;
+	color: $grey-color-dark;
+	border-radius: 4px;
+	padding: 4px 8px;
+	white-space: nowrap;
+	margin: 2px;
+	font-size: .75em;
+}

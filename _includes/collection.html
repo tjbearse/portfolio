@@ -1,0 +1,18 @@
+<div class="full horizScroll horizScroll-{{ include.collection | size }}">
+	{% for entry in include.collection %}
+		<div class="box">
+			<div class="carousel-image-container">
+			{% if entry.image %}
+				<img class="carousel-image" src="{{entry.image}}" alt="{{entry.image_alt}}" />
+			{% endif %}
+			</div>
+			<div>
+				<h3 class="">{{ entry.title }}</h3>
+				{{ entry.content | markdownify }}
+			</div>
+			<div class="tags">
+				{% for tag in entry.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+</div>

@@ -1,0 +1,4 @@
+<a href="#"
+   data-name="{{ site.email | split: "@" | first }}"
+   data-domain="{{ site.email | split: "@" | last }}"
+   onclick="let email=`${this.dataset.name}@${this.dataset.domain}`; this.innerText=email; this.href = 'mailto:' + email; return false;">reveal email</a>
