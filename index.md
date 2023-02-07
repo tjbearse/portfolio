@@ -1,5 +1,4 @@
 ---
-title: Hobby Projects
 permalink: /
 layout: carousel
 ---
